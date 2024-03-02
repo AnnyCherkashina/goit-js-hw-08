@@ -64,6 +64,8 @@ const images = [
     },
 ];
 const galleryElem = document.querySelector('.gallery');
+let instance;
+
 function itemCreatingGalleryImageTemplate(image) {
     return `
         <li class="gallery-item">
@@ -88,14 +90,22 @@ function renderElem() {
     galleryElem.innerHTML = markup;
 }
 
-function onImageClick(event) {
-    event.preventDefault();
+function onGalleryClick(event) {
+    if (!event.target.closest('.gallery-item')) return;
+
     const imageURLbig = event.target.dataset.source;
-    const instance = basicLightbox.create(`<img src="${imageURLbig}" width="1112" height="640">`, {
+
+    const modalImageTemplate = `<img src="${imageURLbig}" width="800" height="600">`;
+
+    instance = basicLightbox.create(modalImageTemplate, {
         onShow: () => {
             window.addEventListener('keydown', onEscapePress);
         },
+        onClose: () => {
+            window.removeEventListener('keydown', onEscapePress);
+        },
     });
+
     instance.show();
 }
 
@@ -105,6 +115,6 @@ function onEscapePress(event) {
     }
 }
 
-galleryElem.addEventListener('click', onImageClick);
+galleryElem.addEventListener('click', onGalleryClick);
 
 renderElem();
