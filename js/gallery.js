@@ -91,18 +91,21 @@ function renderElem() {
 }
 
 function onGalleryClick(event) {
-    if (!event.target.closest('.gallery-item')) return;
+    event.preventDefault();
 
+    if (event.target.nodeName !== "IMG") {
+        return;
+    }
     const imageURLbig = event.target.dataset.source;
 
-    const modalImageTemplate = `<img src="${imageURLbig}" width="800" height="600">`;
+    const modalImageTemplate = `<img src="${imageURLbig}"alt = "${event.target.alt}" width="800" height="600">`;
 
     instance = basicLightbox.create(modalImageTemplate, {
         onShow: () => {
-            window.addEventListener('keydown', onEscapePress);
+            document.addEventListener('keydown', onEscapePress);
         },
         onClose: () => {
-            window.removeEventListener('keydown', onEscapePress);
+            document.removeEventListener('keydown', onEscapePress);
         },
     });
 
